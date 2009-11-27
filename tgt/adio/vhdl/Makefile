@@ -17,7 +17,7 @@ PROJECT = adio
 
 bitfile: $(PROJECT).bit
 
-SOURCES := $(shell sed -n 's/^vhdl\s\+\w\+\s*"\([^[:blank:]]\+\)"/\1/p' < $(PROJECT).prj | xargs)
+SOURCES := $(shell sed -n 's/^vhdl\s\+\w\+\s*"\([^[:blank:]]\+\)"/\1/p' < $(PROJECT).prj )
 OPTIMIZE = high
 PART = xc3s1000-ft256-4
 SPEED = 4
@@ -117,7 +117,7 @@ ASSEMBLEPY = python ../../../vhdl/eproc/assemble/assemble.py
 
 $(PROJECT).postmem.bit: $(PROJECT).mem build/$(PROJECT).bit
 	data2mem  -bm $(PROJECT)_bd.bmm  -bd $(PROJECT).mem  -bt build/$(PROJECT).bit  -o h $(PROJECT)_mem.vhd -o b $(PROJECT).postmem.bit
-	$(GENROM) $(PROJECT).bmm $(PROJECT).dspcontproc.imem
+#	$(GENROM) $(PROJECT).bmm $(PROJECT).dspcontproc.imem
 
 forceromupdate: $(PROJECT).mem
 	data2mem  -bm $(PROJECT)_bd.bmm  -bd $(PROJECT).mem  -bt build/$(PROJECT).bit  -o h $(PROJECT)_mem.vhd -o b $(PROJECT).postmem.bit

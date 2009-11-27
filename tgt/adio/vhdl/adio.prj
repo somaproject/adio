@@ -1,7 +1,4 @@
 
-
-
-
 vhdl soma "../../../vhdl/somabackplane.vhd"
 
 vhdl eproc "../../../vhdl/eproc/vhdl/alu.vhd" 
@@ -18,18 +15,12 @@ vhdl work "../../../vhdl/fibertx.vhd"
 vhdl work "../../../vhdl/framedis.vhd"
 vhdl work "../../../vhdl/framedis.vhd"
 vhdl work "../../../vhdl/acqcmdmux.vhd"
-vhdl work "../../../vhdl/uartacqrx.vhd"
-vhdl work "../../../vhdl/sportacqser.vhd"
-vhdl work "../../../vhdl/acqserial.vhd"
 
 
 vhdl work "../../../vhdl/evtendianrev.vhd"
 vhdl work "../../../vhdl/datasport.vhd"
 
 vhdl work "../../../vhdl/serial-deviceio/vhdl/devicelink.vhd"
-
-vhdl work "../../../vhdl/bootser.vhd"
-vhdl work "../../../vhdl/dspiomux.vhd"
 
 vhdl work "../../../vhdl/eventrx.vhd"
 vhdl work "../../../vhdl/regfile.vhd"
@@ -39,12 +30,12 @@ vhdl work "../../../vhdl/decodemux.vhd"
 vhdl work "../../../vhdl/datamux.vhd"
 vhdl work "../../../vhdl/encodemux.vhd"
 vhdl work "../../../vhdl/encodedata.vhd"
-vhdl work "../../../vhdl/uartbyteout.vhd"
-vhdl work "../../../vhdl/dspcontproc.vhd"
-vhdl work "../../../tests/deviceloopback/jtaginterface.vhd"
+vhdl work "../../../vhdl/analogproc.vhd"
+vhdl work "../../../vhdl/digitalinproc.vhd"
+vhdl work "../../../vhdl/digitaloutproc.vhd"
+#vhdl work "../../../tests/deviceloopback/jtaginterface.vhd"
 
 vhdl work "bufcapture.vhd"
-vhdl work "dspboard.vhd"
 
 vhdl work "adio.vhd"
 

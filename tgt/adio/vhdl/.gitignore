@@ -1,0 +1,14 @@
+xst/
+build/
+*.imem
+*.log
+*.mem
+*.ngr 
+*.srp
+*.xrpt
+*.ise
+*.ngc
+*.sym
+*veo
+*vho
+*.tcl
