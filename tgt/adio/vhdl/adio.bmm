@@ -1,6 +1,0 @@
-ADDRESS_BLOCK displayproc RAMB18 [0x00000000 : 0x0000008ff]
-BUS_BLOCK
-adioproc_inst/instruction_ram [17:0];
-END_BUS_BLOCK;
-END_ADDRESS_BLOCK; 
-

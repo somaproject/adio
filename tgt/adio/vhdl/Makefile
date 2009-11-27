@@ -59,7 +59,6 @@ build/$(PROJECT).ngd: build/$(PROJECT).ngc $(PROJECT).ucf
 	ngdbuild -p $(PART) -uc $(PROJECT).ucf -bm $(PROJECT).bmm  -dd build build/$(PROJECT).ngc build/$(PROJECT).ngd
 
 
-
 # third stage: map: produces pcf, map.ncd
 
 map: build/$(PROJECT)_map.ncd
@@ -112,27 +111,41 @@ transsim: build/$(PROJECT).ngd
 # update roms
 # It's not clear how we handle mutliple roms? 
 
-GENROM = python ../../../../backplane/eproc/assemble/genrom.py
-ASSEMBLEPY = python ../../../../backplane/eproc/assemble/assemble.py
+GENROM = python ../../../vhdl/eproc/assemble/genrom.py
+ASSEMBLEPY = python ../../../vhdl/eproc/assemble/assemble.py
 
 
 $(PROJECT).postmem.bit: $(PROJECT).mem build/$(PROJECT).bit
 	data2mem  -bm $(PROJECT)_bd.bmm  -bd $(PROJECT).mem  -bt build/$(PROJECT).bit  -o h $(PROJECT)_mem.vhd -o b $(PROJECT).postmem.bit
-	$(GENROM) $(PROJECT).bmm $(PROJECT).adioproc.imem
+	$(GENROM) $(PROJECT).bmm $(PROJECT).dspcontproc.imem
 
 forceromupdate: $(PROJECT).mem
 	data2mem  -bm $(PROJECT)_bd.bmm  -bd $(PROJECT).mem  -bt build/$(PROJECT).bit  -o h $(PROJECT)_mem.vhd -o b $(PROJECT).postmem.bit
-	$(GENROM) $(PROJECT).bmm $(PROJECT).adioproc.imem 
+	$(GENROM) $(PROJECT).bmm $(PROJECT).dspcontproc.imem 
 	cp $(PROJECT).postmem.bit $(PROJECT).bit
 
-$(PROJECT).adioproc.mem:  ../../../vhdl/adioproc.asmpy
-	$(ASSEMBLEPY) ../../../vhdl/adioproc.asmpy \
-	$(PROJECT).adioproc.imem $(PROJECT).adioproc.mem > $(PROJECT).adioproc.log
+$(PROJECT).digitalout.mem:  ../../../vhdl/digitalout.asmpy
+	$(ASSEMBLEPY) ../../../vhdl/digitalout.asmpy \
+	$(PROJECT).digitalout.imem $(PROJECT).digitalout.mem > $(PROJECT).digitalout.log
 
 
-$(PROJECT).mem: $(PROJECT).adioproc.mem
+$(PROJECT).digitalin.mem:  ../../../vhdl/digitalin.asmpy
+	$(ASSEMBLEPY) ../../../vhdl/digitalin.asmpy \
+	$(PROJECT).digitalin.imem $(PROJECT).digitalin.mem > $(PROJECT).digitalin.log
+
+
+$(PROJECT).analog.mem:  ../../../vhdl/analog.asmpy
+	$(ASSEMBLEPY) ../../../vhdl/analog.asmpy \
+	$(PROJECT).analog.imem $(PROJECT).analog.mem > $(PROJECT).analog.log
+
+
+$(PROJECT).mem: $(PROJECT).digitalin.mem $(PROJECT).digitalout.mem $(PROJECT).analog.mem
 	echo "@00000000" > $(PROJECT).mem
-	cat $(PROJECT).adioproc.mem >> $(PROJECT).mem
+	cat $(PROJECT).digitalin.mem >> $(PROJECT).mem
+	echo "@10000000" >> $(PROJECT).mem
+	cat $(PROJECT).digitalout.mem >> $(PROJECT).mem
+	echo "@20000000" >> $(PROJECT).mem
+	cat $(PROJECT).analog.mem >> $(PROJECT).mem
 
 # cleanup
 clean:
