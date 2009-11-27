@@ -1,0 +1,367 @@
+Release 10.1 - xst K.31 (lin)
+Copyright (c) 1995-2008 Xilinx, Inc.  All rights reserved.
+--> 
+Parameter TMPDIR set to build
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.06 secs
+ 
+--> 
+Parameter xsthdpdir set to ./xst
+
+
+Total REAL time to Xst completion: 0.00 secs
+Total CPU time to Xst completion: 0.06 secs
+ 
+--> 
+
+TABLE OF CONTENTS
+  1) Synthesis Options Summary
+  2) HDL Compilation
+  3) Design Hierarchy Analysis
+  4) HDL Analysis
+  5) HDL Synthesis
+     5.1) HDL Synthesis Report
+  6) Advanced HDL Synthesis
+     6.1) Advanced HDL Synthesis Report
+  7) Low Level Synthesis
+  8) Partition Report
+  9) Final Report
+     9.1) Device utilization summary
+     9.2) Partition Resource Summary
+     9.3) TIMING REPORT
+
+
+=========================================================================
+*                      Synthesis Options Summary                        *
+=========================================================================
+---- Source Parameters
+Input File Name                    : "digitaltest.prj"
+Input Format                       : mixed
+Ignore Synthesis Constraint File   : NO
+
+---- Target Parameters
+Output File Name                   : "digitaltest"
+Output Format                      : NGC
+Target Device                      : xc3s1000-4-ft256
+
+---- Source Options
+Top Module Name                    : digitaltest
+Automatic FSM Extraction           : YES
+FSM Encoding Algorithm             : One-Hot
+Safe Implementation                : No
+FSM Style                          : lut
+RAM Extraction                     : Yes
+RAM Style                          : Auto
+ROM Extraction                     : Yes
+ROM Style                          : Auto
+Mux Extraction                     : YES
+Decoder Extraction                 : YES
+Priority Encoder Extraction        : YES
+Shift Register Extraction          : YES
+Logical Shifter Extraction         : YES
+XOR Collapsing                     : YES
+Resource Sharing                   : YES
+Multiplier Style                   : auto
+Automatic Register Balancing       : No
+
+---- Target Options
+Add IO Buffers                     : YES
+Global Maximum Fanout              : 500
+Add Generic Clock Buffer(BUFG)     : 8
+Register Duplication               : YES
+Equivalent register Removal        : YES
+Slice Packing                      : YES
+Optimize Instantiated Primitives   : NO
+Use Clock Enable                   : Yes
+Use Synchronous Set                : Yes
+Use Synchronous Reset              : Yes
+Pack IO Registers into IOBs        : true
+
+---- General Options
+Optimization Goal                  : Area
+Optimization Effort                : 2
+Keep Hierarchy                     : NO
+Global Optimization                : AllClockNets
+RTL Output                         : Yes
+Read Cores                         : YES
+Write Timing Constraints           : NO
+Cross Clock Analysis               : NO
+Hierarchy Separator                : _
+Bus Delimiter                      : <>
+Case Specifier                     : maintain
+Slice Utilization Ratio            : 100
+Verilog 2001                       : YES
+Slice Utilization Ratio Delta      : 5
+
+=========================================================================
+
+Setting FSM Encoding Algorithm to : ONE
+
+
+=========================================================================
+*                          HDL Compilation                              *
+=========================================================================
+Compiling vhdl file "/home/jonas/soma/adio/tests/digitaltest/digitaltest.vhd" in Library work.
+Entity <digitaltest> compiled.
+Entity <digitaltest> (Architecture <Behavioral>) compiled.
+
+=========================================================================
+*                     Design Hierarchy Analysis                         *
+=========================================================================
+Analyzing hierarchy for entity <digitaltest> in library <work> (architecture <Behavioral>).
+
+INFO:Xst:2555 - '-hierarchy_separator' switch is being deprecated in a future release.
+
+=========================================================================
+*                            HDL Analysis                               *
+=========================================================================
+Analyzing Entity <digitaltest> in library <work> (Architecture <Behavioral>).
+Entity <digitaltest> analyzed. Unit <digitaltest> generated.
+
+
+=========================================================================
+*                           HDL Synthesis                               *
+=========================================================================
+
+Performing bidirectional port resolution...
+
+Synthesizing Unit <digitaltest>.
+    Related source file is "/home/jonas/soma/adio/tests/digitaltest/digitaltest.vhd".
+    Found 32-bit register for signal <DOUT>.
+    Found 1-bit register for signal <LEDLINK>.
+    Found 1-bit register for signal <LEDEVENT>.
+    Found 24-bit up counter for signal <cnt>.
+    Summary:
+	inferred   1 Counter(s).
+	inferred  34 D-type flip-flop(s).
+Unit <digitaltest> synthesized.
+
+
+=========================================================================
+HDL Synthesis Report
+
+Macro Statistics
+# Counters                                             : 1
+ 24-bit up counter                                     : 1
+# Registers                                            : 3
+ 1-bit register                                        : 2
+ 32-bit register                                       : 1
+
+=========================================================================
+
+=========================================================================
+*                       Advanced HDL Synthesis                          *
+=========================================================================
+
+Loading device for application Rf_Device from file '3s1000.nph' in environment /opt/xilinx10.1/ISE.
+INFO:Xst:2261 - The FF/Latch <DOUT_0> in Unit <digitaltest> is equivalent to the following 31 FFs/Latches, which will be removed : <DOUT_1> <DOUT_2> <DOUT_3> <DOUT_4> <DOUT_5> <DOUT_6> <DOUT_7> <DOUT_8> <DOUT_9> <DOUT_10> <DOUT_11> <DOUT_12> <DOUT_13> <DOUT_14> <DOUT_15> <DOUT_16> <DOUT_17> <DOUT_18> <DOUT_19> <DOUT_20> <DOUT_21> <DOUT_22> <DOUT_23> <DOUT_24> <DOUT_25> <DOUT_26> <DOUT_27> <DOUT_28> <DOUT_29> <DOUT_30> <DOUT_31> 
+
+=========================================================================
+Advanced HDL Synthesis Report
+
+Macro Statistics
+# Counters                                             : 1
+ 24-bit up counter                                     : 1
+# Registers                                            : 3
+ Flip-Flops                                            : 3
+
+=========================================================================
+
+=========================================================================
+*                         Low Level Synthesis                           *
+=========================================================================
+
+Optimizing unit <digitaltest> ...
+
+Mapping all equations...
+Building and optimizing final netlist ...
+Found area constraint ratio of 100 (+ 5) on block digitaltest, actual ratio is 0.
+Replicating register DOUT_0 to handle IOB=TRUE attribute
+
+
+Final Macro Processing ...
+
+=========================================================================
+Final Register Report
+
+Macro Statistics
+# Registers                                            : 28
+ Flip-Flops                                            : 28
+
+=========================================================================
+
+=========================================================================
+*                           Partition Report                             *
+=========================================================================
+
+Partition Implementation Status
+-------------------------------
+
+  No Partitions were found in this design.
+
+-------------------------------
+
+=========================================================================
+*                            Final Report                               *
+=========================================================================
+Final Results
+RTL Top Level Output File Name     : digitaltest.ngr
+Top Level Output File Name         : digitaltest
+Output Format                      : NGC
+Optimization Goal                  : Area
+Keep Hierarchy                     : NO
+
+Design Statistics
+# IOs                              : 35
+
+Cell Usage :
+# BELS                             : 72
+#      GND                         : 1
+#      INV                         : 1
+#      LUT1                        : 23
+#      MUXCY                       : 23
+#      VCC                         : 1
+#      XORCY                       : 23
+# FlipFlops/Latches                : 28
+#      FD                          : 28
+# Clock Buffers                    : 1
+#      BUFGP                       : 1
+# IO Buffers                       : 34
+#      OBUF                        : 34
+=========================================================================
+
+Device utilization summary:
+---------------------------
+
+Selected Device : 3s1000ft256-4 
+
+ Number of Slices:                       12  out of   7680     0%  
+ Number of Slice Flip Flops:             25  out of  15360     0%  
+ Number of 4 input LUTs:                 24  out of  15360     0%  
+ Number of IOs:                          35
+ Number of bonded IOBs:                  35  out of    173    20%  
+    IOB Flip Flops:                       3
+ Number of GCLKs:                         1  out of      8    12%  
+
+---------------------------
+Partition Resource Summary:
+---------------------------
+
+  No Partitions were found in this design.
+
+---------------------------
+
+
+=========================================================================
+TIMING REPORT
+
+NOTE: THESE TIMING NUMBERS ARE ONLY A SYNTHESIS ESTIMATE.
+      FOR ACCURATE TIMING INFORMATION PLEASE REFER TO THE TRACE REPORT
+      GENERATED AFTER PLACE-and-ROUTE.
+
+Clock Information:
+------------------
+-----------------------------------+------------------------+-------+
+Clock Signal                       | Clock buffer(FF name)  | Load  |
+-----------------------------------+------------------------+-------+
+REFCLKIN                           | BUFGP                  | 28    |
+-----------------------------------+------------------------+-------+
+
+Asynchronous Control Signals Information:
+----------------------------------------
+No asynchronous control signals found in this design
+
+Timing Summary:
+---------------
+Speed Grade: -4
+
+   Minimum period: 5.362ns (Maximum Frequency: 186.498MHz)
+   Minimum input arrival time before clock: No path found
+   Maximum output required time after clock: 8.211ns
+   Maximum combinational path delay: No path found
+
+Timing Detail:
+--------------
+All values displayed in nanoseconds (ns)
+
+=========================================================================
+Timing constraint: Default period analysis for Clock 'REFCLKIN'
+  Clock period: 5.362ns (frequency: 186.498MHz)
+  Total number of paths / destination ports: 304 / 28
+-------------------------------------------------------------------------
+Delay:               5.362ns (Levels of Logic = 24)
+  Source:            cnt_1 (FF)
+  Destination:       cnt_23 (FF)
+  Source Clock:      REFCLKIN rising
+  Destination Clock: REFCLKIN rising
+
+  Data Path: cnt_1 to cnt_23
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FD:C->Q               1   0.720   1.140  cnt_1 (cnt_1)
+     LUT1:I0->O            1   0.551   0.000  Mcount_cnt_cy<1>_rt (Mcount_cnt_cy<1>_rt)
+     MUXCY:S->O            1   0.500   0.000  Mcount_cnt_cy<1> (Mcount_cnt_cy<1>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<2> (Mcount_cnt_cy<2>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<3> (Mcount_cnt_cy<3>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<4> (Mcount_cnt_cy<4>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<5> (Mcount_cnt_cy<5>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<6> (Mcount_cnt_cy<6>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<7> (Mcount_cnt_cy<7>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<8> (Mcount_cnt_cy<8>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<9> (Mcount_cnt_cy<9>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<10> (Mcount_cnt_cy<10>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<11> (Mcount_cnt_cy<11>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<12> (Mcount_cnt_cy<12>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<13> (Mcount_cnt_cy<13>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<14> (Mcount_cnt_cy<14>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<15> (Mcount_cnt_cy<15>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<16> (Mcount_cnt_cy<16>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<17> (Mcount_cnt_cy<17>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<18> (Mcount_cnt_cy<18>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<19> (Mcount_cnt_cy<19>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<20> (Mcount_cnt_cy<20>)
+     MUXCY:CI->O           1   0.064   0.000  Mcount_cnt_cy<21> (Mcount_cnt_cy<21>)
+     MUXCY:CI->O           0   0.064   0.000  Mcount_cnt_cy<22> (Mcount_cnt_cy<22>)
+     XORCY:CI->O           1   0.904   0.000  Mcount_cnt_xor<23> (Result<23>)
+     FD:D                      0.203          cnt_23
+    ----------------------------------------
+    Total                      5.362ns (4.222ns logic, 1.140ns route)
+                                       (78.7% logic, 21.3% route)
+
+=========================================================================
+Timing constraint: Default OFFSET OUT AFTER for Clock 'REFCLKIN'
+  Total number of paths / destination ports: 34 / 34
+-------------------------------------------------------------------------
+Offset:              8.211ns (Levels of Logic = 1)
+  Source:            DOUT_0_1 (FF)
+  Destination:       DOUT<30> (PAD)
+  Source Clock:      REFCLKIN rising
+
+  Data Path: DOUT_0_1 to DOUT<30>
+                                Gate     Net
+    Cell:in->out      fanout   Delay   Delay  Logical Name (Net Name)
+    ----------------------------------------  ------------
+     FD:C->Q              31   0.720   1.847  DOUT_0_1 (DOUT_0_1)
+     OBUF:I->O                 5.644          DOUT_30_OBUF (DOUT<30>)
+    ----------------------------------------
+    Total                      8.211ns (6.364ns logic, 1.847ns route)
+                                       (77.5% logic, 22.5% route)
+
+=========================================================================
+
+
+Total REAL time to Xst completion: 3.00 secs
+Total CPU time to Xst completion: 3.14 secs
+ 
+--> 
+
+
+Total memory usage is 143248 kilobytes
+
+Number of errors   :    0 (   0 filtered)
+Number of warnings :    0 (   0 filtered)
+Number of infos    :    2 (   0 filtered)
+

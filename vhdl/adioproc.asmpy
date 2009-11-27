@@ -1,0 +1,88 @@
+"""
+
+"""
+
+### CONSTANTS
+
+EVENTOUT_CMD = 0x80
+EVENTOUT_DEST = 0x87
+EVENTOUT_DATA0 = 0x81
+EVENTOUT_DATA1 = 0x82
+EVENTOUT_DATA2 = 0x83
+EVENTOUT_DATA3 = 0x84
+EVENTOUT_DATA4 = 0x85
+
+EVENTPROC_ENABLE = 0x89
+EVENTPROC_ADDR = 0x88
+
+OUTPUT_EVENTLED = 0x01
+OUTPUT_DEVICE = 0xA0
+
+INPUT_BOOTSERDONE = 0x03
+
+EVENTRXCMD_PING = 0x08
+EVENTRXCMD_LEDSET = 0x31
+EVENTRXCMD_YOUARE = 0x01
+
+env = createEnvironment()
+counter = env.createVariable("counter")
+buftxcounter = env.createVariable("buftxcounter")
+
+# state variables are used for persistence across ECYCLEs
+
+def createEventCycleProc():
+  proc = env.createECycleProc()
+
+  proc.foreverLoop()
+
+
+def createEnableEventCycleProc():
+  newproc = env.createProc("enableEventCycleProc")
+  y = newproc.createVariable("y")
+  #first thing we do is send a test event
+
+  newproc.load(y, 1)
+  newproc.output(EVENTPROC_ENABLE, y)
+  newproc.foreverLoop()
+
+def pingResponseEvent():
+  proc = env.createEProc((EVENTRXCMD_PING, EVENTRXCMD_PING), (0, 255))
+  tmp = proc.createVariable("tmp")
+
+  proc.move(tmp, ereg.src)
+  proc.output(EVENTOUT_DEST, tmp)
+
+  proc.output(EVENTOUT_DATA1, env.counter)
+  proc.load(tmp, 1)
+  proc.add(env.counter, tmp)
+  
+  proc.output(EVENTOUT_DATA2, env.buftxcounter)
+
+  proc.move(tmp, ereg.edata[0])
+  proc.output(EVENTOUT_DATA0, tmp)
+
+  proc.load(tmp, EVENTRXCMD_PING)
+  proc.output(EVENTOUT_CMD, tmp)
+  proc.load(tmp, EVENTRXCMD_PING)
+
+
+def pingSetLT():
+  proc = env.createEProc((EVENTRXCMD_LEDSET, EVENTRXCMD_LEDSET ), (0, 255))
+
+  tmp = proc.createVariable("tmp")
+  proc.move(tmp, ereg.edata[0])
+  proc.output(OUTPUT_EVENTLED,  tmp)
+
+
+def proc_youare():
+  proc = env.createEProc((EVENTRXCMD_YOUARE, EVENTRXCMD_YOUARE), (0, 255))
+  tmp = proc.createVariable("tmp")
+  proc.move(tmp, ereg.edata[0])
+  proc.output(OUTPUT_DEVICE, tmp)
+
+createEnableEventCycleProc()
+createEventCycleProc()
+pingResponseEvent()
+pingSetLT()
+proc_youare()
+

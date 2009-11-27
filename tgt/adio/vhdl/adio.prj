@@ -1,0 +1,24 @@
+
+
+vhdl soma "../../../vhdl/somabackplane.vhd"
+
+vhdl eproc "../../../vhdl/eproc/alu.vhd" 
+vhdl eproc "../../../vhdl/eproc/regfile.vhd"
+vhdl eproc "../../../vhdl/eproc/ecore.vhd"
+vhdl eproc "../../../vhdl/eproc/eventtx.vhd"
+vhdl eproc "../../../vhdl/eproc/evtdnd.vhd"
+vhdl eproc "../../../vhdl/eproc/txreqeventbuffer.vhd"
+vhdl eproc "../../../vhdl/eproc/txreqbrambuffer.vhd"
+vhdl eproc "../../../vhdl/eproc/eproc.vhd"
+
+vhdl work "../../../vhdl/adioproc.vhd"
+
+vhdl work "../../../vhdl/deviceio/devicelink.vhd"
+vhdl work "../../../vhdl/regfile.vhd"
+vhdl work "../../../vhdl/decodemux.vhd"
+vhdl work "../../../vhdl/encodemux.vhd"
+
+
+vhdl work "adio.vhd"
+
+#
