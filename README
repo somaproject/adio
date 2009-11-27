@@ -1,0 +1,11 @@
+Soma Analog/Digital Input/Output
+=================================
+
+Digital and analog front-panel input/output
+
+
+0x48 : analog 
+0x4A : Digital Output 
+0x4B : Digital Input
+
+

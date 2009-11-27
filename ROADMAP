@@ -1,0 +1,31 @@
+
+Version 0.7 : Establish link, ping
+------------------------------------
+
+Version 0.8 : Simple digital output
+-----------------------------------
+Events to set output state, consisting of a mask and a value set. 
+
+
+Version 0.85: Simple Digital input
+----------------------------------
+Polling of inputs
+
+
+Version 0.90 : Simple Analog Output
+-----------------------------------
+pushing of sample outputs
+
+Version 0.95 : Simple Analog Input
+----------------------------------
+polling of sample inputs
+
+Version 0.99 : Complex digital Input
+-------------------------------------
+Interrupts
+
+
+Version 1.0 : Complex Digital Output
+-------------------------------------
+Patterns
+
