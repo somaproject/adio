@@ -1,0 +1,17 @@
+ADDRESS_BLOCK analogproc RAMB18 [0x00000000 : 0x0000008ff]
+BUS_BLOCK
+analogproc_inst/instruction_ram [17:0];
+END_BUS_BLOCK;
+END_ADDRESS_BLOCK; 
+
+ADDRESS_BLOCK digitalinproc RAMB18 [0x10000000 : 0x100008ff]
+BUS_BLOCK
+digitalin_inst/instruction_ram [17:0];
+END_BUS_BLOCK;
+END_ADDRESS_BLOCK; 
+
+ADDRESS_BLOCK digitaloutproc RAMB18 [0x20000000 : 0x200008ff]
+BUS_BLOCK
+digitalout_inst/instruction_ram [17:0];
+END_BUS_BLOCK;
+END_ADDRESS_BLOCK; 

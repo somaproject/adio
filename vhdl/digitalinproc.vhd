@@ -9,7 +9,7 @@ use eproc.all;
 library UNISIM;
 use UNISIM.VComponents.all;
 
-entity dspcontproc is
+entity digitalinproc is
   generic (
     RAM_INIT_00 : bit_vector(0 to 255) := (others => '0');
     RAM_INIT_01 : bit_vector(0 to 255) := (others => '0');
@@ -101,24 +101,12 @@ entity dspcontproc is
     ESENDGRANT  : in  std_logic;
     ESENDDONE   : out std_logic;
     ESENDDATA   : out std_logic_vector(7 downto 0);
-    ESENDDATAEN : in  std_logic;
-    -- DSP interface
-    DSPRESET    : out std_logic := '0';
-    DSPSPIEN    : out std_logic := '1';
-    DSPSPISS    : out std_logic := '1';
-    DSPSPIMISO  : in  std_logic;
-    DSPSPIMOSI  : out std_logic;
-    DSPSPICLK   : out std_logic := '0';
-    DSPSPIHOLD  : in  std_logic;
-    DSPUARTTX   : out std_logic;
-    -- STATUS
-    LEDEVENT    : out std_logic;
-    DEBUGIN     : in  std_logic_vector(31 downto 0)
+    ESENDDATAEN : in  std_logic
 
     );
-end dspcontproc;
+end digitalinproc;
 
-architecture Behavioral of dspcontproc is
+architecture Behavioral of digitalinproc is
 
   signal oportaddr   : std_logic_vector(7 downto 0)  := (others => '0');
   signal oportdata   : std_logic_vector(15 downto 0) := (others => '0');
@@ -146,40 +134,6 @@ architecture Behavioral of dspcontproc is
 
   signal device : std_logic_vector(7 downto 0) := (others => '1');  -- not set
 
-  component bootser
-    port (CLK       : in  std_logic;
-           DIN      : in  std_logic_vector(15 downto 0);
-           ADDRIN   : in  std_logic_vector(15 downto 0);
-           WE       : in  std_logic;
-           START    : in  std_logic;
-           STARTLEN : in  std_logic_vector(15 downto 0);
-           DONE     : out std_logic;
-           MOSI     : out std_logic;
-           HOLD     : in  std_logic;
-           SCLK     : out std_logic
-           );
-  end component;
-
-  signal bootserwe       : std_logic                     := '0';
-  signal bootseraddrin   : std_logic_vector(15 downto 0) := (others => '0');
-  signal bootserstartlen : std_logic_vector(15 downto 0) := (others => '0');
-  signal bootserstart    : std_logic                     := '0';
-  signal bootserdone     : std_logic                     := '0';
-
-
-  component uartbyteout
-    port (
-      CLK    : in  std_logic;           -- '0'
-      DIN    : in  std_logic_vector(7 downto 0);
-      SEND   : in  std_logic;
-      DONE   : out std_logic;
-      UARTTX : out std_logic
-      );
-  end component;
-
-  signal uarttxsend              : std_logic := '0';
-  signal uarttxdone, uarttxdonel : std_logic := '0';
-  
 begin  -- Behavioral
 
   eproc_inst : entity eproc.eproc
@@ -224,27 +178,6 @@ begin  -- Behavioral
 
   eventtxwe <= '1' when oportstrobe = '1' and oportaddr(7 downto 3) = "10000" else '0';
 
-  bootser_inst : bootser
-    port map (
-      CLK      => clkhi,
-      DIN      => oportdata,
-      ADDRIN   => bootseraddrin,
-      WE       => bootserwe,
-      START    => bootserstart,
-      STARTLEN => bootserstartlen,
-      DONE     => bootserdone,
-      MOSI     => DSPSPIMOSI,
-      --MISO => DSPSPIMISO,
-      HOLD     => DSPSPIHOLD,
-      SCLK     => DSPSPICLK);
-
-  uartbyteout_inst : uartbyteout
-    port map (
-      CLK    => clkhi,
-      DIN    => oportdata(7 downto 0),
-      SEND   => uarttxsend,
-      DONE   => uarttxdone,
-      UARTTX => DSPUARTTX); 
 
   instruction_ram : RAMB16_S18_S18
     generic map (
@@ -345,54 +278,14 @@ begin  -- Behavioral
       WEB   => '0',
       SSRB  => RESET);
 
-  bootserwe <= '1' when oportaddr = X"02" and oportstrobe = '1' else '0';
-
-
-  bootserstart <= '1' when oportaddr = X"03" and oportstrobe = '1' else '0';
-
-  uarttxsend      <= '1' when oportaddr = X"06" and oportstrobe = '1' else '0';
-  bootserstartlen <= oportdata(15 downto 0);
 
   main : process(CLKHI)
   begin
     if rising_edge(CLkHI) then
-      if oportaddr = X"00" and OPORTSTROBE = '1' then
-        DSPRESET <= oportdata(0);
-      elsif oportaddr = X"01" and OPORTSTROBE = '1' then
-        lledevent <= oportdata(0);
-      elsif oportaddr = X"04" and OPORTSTROBE = '1' then
-        DSPSPISS <= oportdata(0);
-      elsif oportaddr = X"05" and OPORTSTROBE = '1' then
-        DSPSPIEN <= oportdata(0);
-      elsif oportaddr = X"A0" and OPORTSTROBE = '1' then
+      if oportaddr = X"A0" and OPORTSTROBE = '1' then
         device <= oportdata(7 downto 0);
-      elsif oportaddr = X"08" and OPORTSTROBE = '1' then
-        bootseraddrin <= oportdata(15 downto 0);
       end if;
 
-
-
-      if oportaddr = X"06" and oportstrobe = '1' then
-        uarttxdonel <= '0';
-      else
-        if uarttxdone = '1' then
-          uarttxdonel <= '1';
-        end if;
-      end if;
-
-      if iportstrobe = '1' then
-        if iportaddr = X"03" then
-          iportdata <= X"000" & "000" & bootserdone;
-        elsif iportaddr = X"07" then
-          iportdata <= X"000" & "000" & uarttxdonel;
-        elsif iportaddr = X"09" then
-          iportdata <= debuginll(15 downto 0);
---        elsif iportaddr = X"0A" then
---          iportdata <= debuginll(31 downto 16); 
-        end if;
-      end if;
-
-      LEDEVENT <= lledevent;
 
       enewoutl <= enewout;
       enewoutd <= enewoutl or enewout;
@@ -404,12 +297,7 @@ begin  -- Behavioral
 
   end process main;
 
-  debugproc : process(CLK)
-  begin
-    if rising_edge(CLK) then
-      debuginl <= DEBUGIN;
-    end if;
-  end process debugproc;
+
 
   
 end Behavioral;
