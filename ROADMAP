@@ -2,6 +2,7 @@
 Version 0.7 : Establish link, ping
 ------------------------------------
 
+
 Version 0.8 : Simple digital output
 -----------------------------------
 Events to set output state, consisting of a mask and a value set. 

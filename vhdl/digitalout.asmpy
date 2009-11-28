@@ -15,14 +15,7 @@ EVENTOUT_DATA4 = 0x85
 EVENTPROC_ENABLE = 0x89
 EVENTPROC_ADDR = 0x88
 
-OUTPUT_DSPRESET = 0x00
 OUTPUT_EVENTLED = 0x01
-OUTPUT_BOOTSERWE = 0x02
-OUTPUT_BOOTSERADDR = 0x08
-OUTPUT_BOOTSTART = 0x03
-OUTPUT_SPISS = 0x04
-OUTPUT_SPIEN = 0x05
-OUTPUT_UARTTX = 0x06
 OUTPUT_DEVICE = 0xA0
 
 INPUT_BOOTSERDONE = 0x03
@@ -33,12 +26,7 @@ EVENTRXCMD_PING = 0x08
 EVENTRXCMD_VERSION = 0x04
 
 EVENTRXCMD_LEDSET = 0x31
-EVENTRXCMD_DATABUF = 0x32
-EVENTRXCMD_DATABUFTX = 0x33
-EVENTRXCMD_DSPSPISS = 0x34
-EVENTRXCMD_DSPSPIEN = 0x35
-EVENTRXCMD_DSPRESET = 0x36
-EVENTRXCMD_UARTTX = 0x37
+
 EVENTRXCMD_DEBUG = 0x38
 
 EVENTRXCMD_YOUARE = 0x01
@@ -50,38 +38,12 @@ EVENTTXCMD_DEBUG_RESPONSE = 0x38
 env = createEnvironment()
 counter = env.createVariable("counter")
 buftxcounter = env.createVariable("buftxcounter")
-pendingDataBufTXSrc = env.createVariable("pendingDataBufTXSrc")
-pendingDataBufTXNonce = env.createVariable("pendingDataBufTXNonce")
 
 # state variables are used for persistence across ECYCLEs
 
 
 def createEventCycleProc():
   proc = env.createECycleProc()
-  tmp = proc.createVariable("tmp")
-  tmp2 = proc.createVariable("tmp2")
-  proc.input(INPUT_BOOTSERDONE, tmp)
-  proc.add(tmp, tmp)
-  proc.jz("ecycleproc_notx")
-
-  # if it's zero, jump over
-  proc.load(tmp, 0)
-  proc.add(tmp, env.pendingDataBufTXSrc)
-  proc.jz("ecycleproc_notx") 
-  proc.output(EVENTOUT_DEST, env.pendingDataBufTXSrc)
-  proc.output(EVENTOUT_DATA0, env.pendingDataBufTXNonce)
-  proc.load(tmp, EVENTRXCMD_DATABUFTX)
-  proc.output(EVENTOUT_CMD, tmp)
-  
-  proc.load(env.pendingDataBufTXSrc, 0)
-  
-  proc.label("ecycleproc_notx")
-##   proc.load(tmp, 1)
-##   proc.output(OUTPUT_EVENTLED,  tmp)
-
-##   proc.load(tmp, 0)
-##   proc.output(OUTPUT_EVENTLED,  tmp)
-
   proc.foreverLoop()
 
 
@@ -137,43 +99,6 @@ def pingSetLT():
   proc.move(tmp, ereg.edata[0])
   proc.output(OUTPUT_EVENTLED,  tmp)
 
-def proc_bootserwe():
-  proc = env.createEProc((EVENTRXCMD_DATABUF, EVENTRXCMD_DATABUF), (0, 255))
-
-  tmp = proc.createVariable("tmp")
-  proc.move(tmp, ereg.edata[1])
-  proc.output(OUTPUT_BOOTSERADDR, tmp)
-  proc.move(tmp, ereg.edata[0])
-  proc.output(OUTPUT_BOOTSERWE, tmp)
-  
-def proc_databuftx():
-  proc = env.createEProc((EVENTRXCMD_DATABUFTX, EVENTRXCMD_DATABUFTX), (0, 255))
-  tmp = proc.createVariable("tmp")
-  proc.move(env.pendingDataBufTXSrc, ereg.src)
-  proc.move(env.pendingDataBufTXNonce, ereg.edata[1])
-  
-  proc.move(tmp, ereg.edata[0]) # this is the length of the buffer / packet
-  proc.output(OUTPUT_BOOTSTART, tmp)
-  proc.load(tmp, 1)
-  proc.add(env.buftxcounter, tmp)
-  
-def proc_spiss():
-  proc = env.createEProc((EVENTRXCMD_DSPSPISS, EVENTRXCMD_DSPSPISS), (0, 255))
-  tmp = proc.createVariable("tmp")
-  proc.move(tmp, ereg.edata[0])
-  proc.output(OUTPUT_SPISS, tmp)
-
-def proc_spien():
-  proc = env.createEProc((EVENTRXCMD_DSPSPIEN, EVENTRXCMD_DSPSPIEN), (0, 255))
-  tmp = proc.createVariable("tmp")
-  proc.move(tmp, ereg.edata[0])
-  proc.output(OUTPUT_SPIEN, tmp)
-
-def proc_dspreset():
-  proc = env.createEProc((EVENTRXCMD_DSPRESET, EVENTRXCMD_DSPRESET), (0, 255))
-  tmp = proc.createVariable("tmp")
-  proc.move(tmp, ereg.edata[0])
-  proc.output(OUTPUT_DSPRESET, tmp)
   
 
 def proc_youare():
@@ -182,23 +107,10 @@ def proc_youare():
   proc.move(tmp, ereg.edata[0])
   proc.output(OUTPUT_DEVICE, tmp)
   
-def proc_uarttx():
-  proc = env.createEProc((EVENTRXCMD_UARTTX, EVENTRXCMD_UARTTX), (0, 255))
-  tmp = proc.createVariable("tmp")
-  proc.move(tmp, ereg.edata[0])
-  proc.output(OUTPUT_UARTTX, tmp)
-
 
 createEnableEventCycleProc()
 createEventCycleProc()
-debugResponseEvent()
 pingResponseEvent()
-pingSetLT()
 
-proc_bootserwe()
-proc_spiss()
-proc_spien()
-proc_databuftx()
-proc_dspreset()
 proc_youare()
-proc_uarttx()
+

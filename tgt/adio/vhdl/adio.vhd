@@ -764,7 +764,8 @@ begin  -- Behavioral
       EARXBYTED    => earxbyted,
       EARXBYTESELD => earxbyteseld);
 
-  digitalin_inst : digitalinproc
+
+  analogproc_inst : analogproc
     port map (
       CLK         => clk,
       CLKHI       => clk2x,
@@ -779,6 +780,7 @@ begin  -- Behavioral
       ESENDDATA   => eprocdataa,
       ESENDDATAEN => eprocdataen
       );
+
 
   eventrx_a : eventrx
     port map (
@@ -812,7 +814,6 @@ begin  -- Behavioral
       ESENDDATAEN => eprocdataen);
       
 
-
   eventrx_b : eventrx
     port map (
       CLK      => CLK,
@@ -828,9 +829,8 @@ begin  -- Behavioral
       DONE     => edspdone(1),
       DEBUG => eventrxdebug_b);
 
-
-
-  analogproc_inst : analogproc
+  
+  digitalin_inst : digitalinproc
     port map (
       CLK         => clk,
       CLKHI       => clk2x,
@@ -859,7 +859,6 @@ begin  -- Behavioral
       REQ      => edspreq(2),
       GRANT    => edspgrant(2),
       DONE     => edspdone(2));
-
 
   datamux_inst : datamux
     port map (
