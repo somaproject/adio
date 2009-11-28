@@ -141,11 +141,11 @@ $(PROJECT).analog.mem:  ../../../vhdl/analog.asmpy
 
 $(PROJECT).mem: $(PROJECT).digitalin.mem $(PROJECT).digitalout.mem $(PROJECT).analog.mem
 	echo "@00000000" > $(PROJECT).mem
-	cat $(PROJECT).digitalin.mem >> $(PROJECT).mem
+	cat $(PROJECT).analog.mem >> $(PROJECT).mem
 	echo "@10000000" >> $(PROJECT).mem
 	cat $(PROJECT).digitalout.mem >> $(PROJECT).mem
 	echo "@20000000" >> $(PROJECT).mem
-	cat $(PROJECT).analog.mem >> $(PROJECT).mem
+	cat $(PROJECT).digitalin.mem >> $(PROJECT).mem
 
 # cleanup
 clean:

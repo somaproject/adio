@@ -19,7 +19,10 @@ entity adio is
     TXIO_N    : out std_logic;
     -- STATUS LEDS
     LEDLINK   : out std_logic;
-    LEDEVENT  : out std_logic);
+    LEDEVENT  : out std_logic;
+    -- Digital output
+    DOUT : out std_logic_vector(31 downto 0)
+    );
 end adio;
 
 architecture Behavioral of adio is
@@ -58,6 +61,9 @@ architecture Behavioral of adio is
 
   signal ppiedata : std_logic_vector(7 downto 0) := (others => '0');
   signal ppifs1   : std_logic                    := '0';
+
+  signal digitalout : std_logic_vector(31 downto 0)  := (others => '0');
+  
 
   component decodemux
     port (
@@ -375,7 +381,9 @@ architecture Behavioral of adio is
       ESENDGRANT  : in  std_logic;
       ESENDDONE   : out std_logic;
       ESENDDATA   : out std_logic_vector(7 downto 0);
-      ESENDDATAEN : in  std_logic
+      ESENDDATAEN : in  std_logic;
+    -- outputs
+      DIGITALOUT : out std_logic_vector(31 downto 0)
       );
   end component;
   
@@ -811,7 +819,8 @@ begin  -- Behavioral
       ESENDGRANT  => eprocgrant(1),
       ESENDDONE   => eprocdone(1),
       ESENDDATA   => eprocdatab,
-      ESENDDATAEN => eprocdataen);
+      ESENDDATAEN => eprocdataen,
+      DIGITALOUT => digitalout);
       
 
   eventrx_b : eventrx
@@ -1042,6 +1051,9 @@ begin  -- Behavioral
   process(CLK)
     begin
       if rising_edge(CLK) then
+
+        DOUT <= digitalout;
+        
         txkl <= txk; 
         capture_din <= X"00000" & txk & "000" & txdata;
         capture_dinl <= capture_din; 

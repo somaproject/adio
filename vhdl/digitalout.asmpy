@@ -16,7 +16,19 @@ EVENTPROC_ENABLE = 0x89
 EVENTPROC_ADDR = 0x88
 
 OUTPUT_EVENTLED = 0x01
+OUTPUT_MASK_HIGH = 0x02
+OUTPUT_MASK_LOW = 0x03
+OUTPUT_VALUE_HIGH = 0x04
+OUTPUT_VALUE_LOW = 0x05
+
+INPUT_VALUE_HIGH = 0x06
+INPUT_VALUE_LOW = 0x07
+
+
+
 OUTPUT_DEVICE = 0xA0
+
+
 
 INPUT_BOOTSERDONE = 0x03
 INPUT_DEBUGINLOW = 0x09
@@ -25,7 +37,11 @@ INPUT_DEBUGINHIGH = 0x0A
 EVENTRXCMD_PING = 0x08
 EVENTRXCMD_VERSION = 0x04
 
-EVENTRXCMD_LEDSET = 0x31
+EVENTRXCMD_DIGITALOUT = 0x30
+EVENTRXCMD_DIGITALREAD = 0x31
+
+EVENTRXCMD_LEDSET = 0x33
+
 
 EVENTRXCMD_DEBUG = 0x38
 
@@ -34,6 +50,7 @@ EVENTRXCMD_YOUARE = 0x01
 
 EVENTTXCMD_PING_RESPONSE = 0x09
 EVENTTXCMD_DEBUG_RESPONSE = 0x38
+EVENTTXCMD_DIGITALREAD_RESPONSE = 0x31
 
 env = createEnvironment()
 counter = env.createVariable("counter")
@@ -91,6 +108,39 @@ def debugResponseEvent():
   proc.load(tmp, EVENTTXCMD_DEBUG_RESPONSE)
   proc.output(EVENTOUT_CMD, tmp)
 
+def proc_digitaloutEvent():
+  proc = env.createEProc((EVENTRXCMD_DIGITALOUT, EVENTRXCMD_DIGITALOUT), (0, 255))
+  tmp = proc.createVariable("tmp")
+
+  proc.move(tmp, ereg.edata[0])
+  proc.output(OUTPUT_MASK_HIGH, tmp)
+
+  proc.move(tmp, ereg.edata[1])
+  proc.output(OUTPUT_MASK_LOW, tmp)
+
+  proc.move(tmp, ereg.edata[2])
+  proc.output(OUTPUT_VALUE_HIGH, tmp)
+
+  proc.move(tmp, ereg.edata[3])
+  proc.output(OUTPUT_VALUE_LOW, tmp)
+
+def proc_digital_read_Event():
+  proc = env.createEProc((EVENTRXCMD_DIGITALREAD, EVENTRXCMD_DIGITALREAD), (0, 255))
+  tmp = proc.createVariable("tmp")
+
+  proc.move(tmp, ereg.src)
+  proc.output(EVENTOUT_DEST, tmp)
+
+  proc.input(INPUT_VALUE_HIGH, tmp)
+  proc.output(EVENTOUT_DATA0, tmp)
+
+  proc.input(INPUT_VALUE_LOW, tmp)
+  proc.output(EVENTOUT_DATA1, tmp)
+
+  proc.load(tmp, EVENTTXCMD_DIGITALREAD_RESPONSE)
+  proc.output(EVENTOUT_CMD, tmp)
+
+
 
 def pingSetLT():
   proc = env.createEProc((EVENTRXCMD_LEDSET, EVENTRXCMD_LEDSET ), (0, 255))
@@ -114,3 +164,6 @@ pingResponseEvent()
 
 proc_youare()
 
+
+proc_digitaloutEvent()
+proc_digital_read_Event()

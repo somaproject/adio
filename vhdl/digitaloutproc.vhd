@@ -101,8 +101,10 @@ entity digitaloutproc is
     ESENDGRANT  : in  std_logic;
     ESENDDONE   : out std_logic;
     ESENDDATA   : out std_logic_vector(7 downto 0);
-    ESENDDATAEN : in  std_logic
-
+    ESENDDATAEN : in  std_logic; 
+    -- digital outputs
+    DIGITALOUT : out std_logic_vector(31 downto 0)
+    
     );
 end digitaloutproc;
 
@@ -134,6 +136,11 @@ architecture Behavioral of digitaloutproc is
 
   signal device : std_logic_vector(7 downto 0) := (others => '1');  -- not set
 
+  signal digitalout_mask : std_logic_vector(31 downto 0) := (others => '0');
+  
+  signal lldigitalout, ldigitalout, set_digitalout
+  : std_logic_vector(31 downto 0) := (others => '0');
+  
 begin  -- Behavioral
 
   eproc_inst : entity eproc.eproc
@@ -285,19 +292,58 @@ begin  -- Behavioral
       if oportaddr = X"A0" and OPORTSTROBE = '1' then
         device <= oportdata(7 downto 0);
       end if;
+      
+      if OPORTSTROBE = '1'  then
+        if oportaddr = X"02" then
+          digitalout_mask(31 downto 16) <= oportdata;
+        end if;
+        
+        if oportaddr = X"03" then
+          digitalout_mask(15 downto 0) <= oportdata;
+        end if;
+        
+        if oportaddr = X"04" then
+          set_digitalout(31 downto 16) <= oportdata;
+        end if;
+        
+        if oportaddr = X"05" then
+          set_digitalout(15 downto 0) <= oportdata;
+        end if;
+        
+      end if;
 
+      if iportstrobe = '1' then
+        if iportaddr = X"06" then
+          iportdata <= ldigitalout(31 downto 16);
+        elsif iportaddr = X"07" then
+          iportdata <= ldigitalout(15 downto 0);
+        end if;
+      end if;
 
       enewoutl <= enewout;
       enewoutd <= enewoutl or enewout;
 
       debuginll <= debuginl;
 
-
     end if;
 
   end process main;
 
+  gen_out: for i in 0 to 31 generate
+    lldigitalout(i) <= set_digitalout(i) when digitalout_mask(i) = '1' else
+                       ldigitalout(i); 
+  end generate gen_out;
 
+  
+  main_slow : process(CLK)
+    begin
+      if rising_edge(CLK) then
+        if ECYCLE = '1' then
+          ldigitalout <= lldigitalout; 
+        end if;
+      end if;
+    end process main_slow; 
 
+    DIGITALOUT <= ldigitalout;
   
 end Behavioral;
